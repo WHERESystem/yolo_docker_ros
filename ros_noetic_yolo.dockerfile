@@ -52,7 +52,7 @@ RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
 RUN git clone https://github.com/TravisMoleski/usb_cam.git
-RUN git clone --recursive https://github.com/TravisMoleski/darknet_ros.git 
+RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
 
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd /catkin_ws; catkin build'
 
