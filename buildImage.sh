@@ -1,1 +1,1 @@
-docker build -f ros_noetic_yolo.dockerfile -t ros_ubuntu --build-arg CACHEBUST=$(date +%s) .
+docker build -f ros_noetic_yolo.dockerfile -t ros_noetic_yolo --build-arg CACHEBUST=$(date +%s) .

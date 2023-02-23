@@ -49,20 +49,21 @@ WORKDIR /catkin_ws/src
 
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
-ARG CACHEBUST=1
+# ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
-RUN git clone https://github.com/TravisMoleski/usb_cam.git
+RUN git clone --recursive https://github.com/WHERESystem/usb_cam.git
 RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
 
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd /catkin_ws; catkin build'
 
 WORKDIR /catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
 RUN wget http://pjreddie.com/media/files/yolov3.weights
+RUN wget https://github.com/WHERESystem/darknet_ros/releases/download/1.1.1/deer_logos.weights
 WORKDIR /catkin_ws/src/
 
 # ENV LD_LIBRARY_PATH = $LD_LIBRARY_PATH:/usr/local/cuda/lib64
 
 RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
 
-# RUN echo "export ROS_MASTER_URI=http://192.168.1.2:11311/" >> ~/.bashrc
-# RUN echo "export ROS_IP=192.168.1.7" >> ~/.bashrc
+RUN echo "export ROS_MASTER_URI=http://192.168.1.3:11311/" >> ~/.bashrc
+# RUN echo "export ROS_IP=192.168.1.3" >> ~/.bashrc
