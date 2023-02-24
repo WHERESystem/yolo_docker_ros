@@ -1,9 +1,12 @@
 FROM nvidia/cuda:11.0.3-cudnn8-devel-ubuntu20.04
 
 ARG DEBIAN_FRONTEND=noninteractive
-
 # install ros dependencies
-RUN apt-get update\
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update 
+RUN apt-get update --no-install-recommends \
     && apt-get install curl -y\
     && apt-get install -y lsb-release\
     && apt-get install -y tzdata\
@@ -17,6 +20,7 @@ RUN apt-get update\
 ENV TZ=America/NewYork
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+# SHELL ["/bin/bash", "-c"]
 # install ros packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ros-noetic-perception \
@@ -39,7 +43,7 @@ RUN apt-get update \
     && apt-get install -y git python3 build-essential python3-zmq python3-matplotlib python3-scipy libev-dev libevdev2\
     && apt-get install python3-catkin-tools python3-osrf-pycommon -y
 
-SHELL ["/bin/bash", "-c"]
+# SHELL ["/bin/bash", "-c"]
 
 RUN pip3 install setuptools==49.6.0
 RUN pip3 install imutils pyserial rpi.gpio
@@ -49,7 +53,7 @@ WORKDIR /catkin_ws/src
 
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
-# ARG CACHEBUST=1
+ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
 RUN git clone --recursive https://github.com/WHERESystem/usb_cam.git
 RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 

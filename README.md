@@ -1,13 +1,28 @@
 # Darknet ROS Using Docker
 
-## Image Size:
+## Image Size: 8 GB
 
-## Dependencies: 
+## Building: 
+On x86_64 architecture: use ros_noetic_yolo.dockerfile with ./buildImage.sh
+
+On amd64 architecture (jetson): use jetson_noetic_yolo.dockerfile with ./buildImage_jetson.sh
+
+
+<!-- Docker with buildx. Needed for Jetson to solve "The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested". https://github.com/docker/buildx#installing
+
+
+On host (may not be necessary to build, but it was on my docker build on the jetson nano), for Docker 19.03+ exectute:
+
+DOCKER_BUILDKIT=1 docker build --platform=local -o . "https://github.com/docker/buildx.git"
+
+mkdir -p ~/.docker/cli-plugins
+
+mv buildx ~/.docker/cli-plugins/docker-buildx -->
 
 ## Tested on: Ubuntu 20.04, Nvidia Jetson
-COCO update rate at 640x640 on Jetson:
+COCO update rate at 640x640 (YOLO) on Jetson with 1920x1080 res:
 
-COCO update rate at 640x640 on Nvida 3080: 40 Hz
+COCO update rate at 640x640 (YOLO) on Nvida  3080 1920x1080 res: 45 Hz
 
 ## Will need to change:
 Weights, config, camera mounting in docker, and refernce in launch file for darknet_ros
@@ -24,4 +39,4 @@ In /darknet_ros/darknet_ros/launch/yolo_v3.launch, check that published usb_cam 
 
 Default weights for yolo_v3.lauch are from the COCO dataset for 80 objects, but can changed in /config/yolov3.yaml, parameters will also need updated in the /yolo_network_config/ weights and cfg.
 
-You will need to change the ROS_MASTER URI in the docker file to match your ground station/main computer.
+You will need to change the ROS_MASTER URI in the docker file to match your ground station/main computer. Easiest to throw this at the end of the dockerfile.
