@@ -7,6 +7,9 @@ On x86_64 architecture: use ros_noetic_yolo.dockerfile with ./buildImage.sh
 
 On amd64 architecture (jetson): use jetson_noetic_yolo.dockerfile with ./buildImage_jetson.sh
 
+You may need to set the default docker runtime to "nvidia" if missing cublas when building on jetson: https://forums.developer.nvidia.com/t/nvidia-l4t-base-missing-cublas-v2-h/174582/4
+
+In /etc/docker/daemon.json add at beginning of file: "default-runtime": "nvidia" to give build environment GPU access.
 
 <!-- Docker with buildx. Needed for Jetson to solve "The requested image's platform (linux/amd64) does not match the detected host platform (linux/arm64/v8) and no specific platform was requested". https://github.com/docker/buildx#installing
 

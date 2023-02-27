@@ -1,1 +1,1 @@
-docker exec -it ros_ubuntu bash
+docker exec -it jetson_noetic_yolo bash

@@ -15,7 +15,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 #
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-          git \
+        nano \
+        git \
 		cmake \
 		build-essential \
 		curl \
@@ -40,6 +41,8 @@ RUN apt-get update && \
           python3-rosdep \
           python3-rosinstall-generator \
           python3-vcstool \
+          python3-catkin-pkg\
+          python3-catkin-tools\
           build-essential && \
     rosdep init && \
     rosdep update && \
@@ -49,27 +52,27 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ros-${ROS_DISTRO}-perception \
     && apt-get install ros-${ROS_DISTRO}-roslint\
     && apt-get install ros-${ROS_DISTRO}-diagnostics -y \
+    && apt-get install ros-${ROS_DISTRO}-catkin \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /ros_catkin_ws/src
+WORKDIR /catkin_ws/src
 
 RUN echo 'source /opt/ros/${ROS_DISTRO}/setup.bash' >> /root/.bashrc
 
-ARG CACHEBUST=1
+# ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
 RUN git clone https://github.com/WHERESystem/usb_cam.git
 RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
 
-RUN /bin/bash -c '. /opt/ros/${ROS_DISTRO}/setup.bash; cd /ros_catkin_ws; catkin build'
+RUN /bin/bash -c '. /opt/ros/${ROS_DISTRO}/setup.bash; cd /catkin_ws; catkin build'
 
-WORKDIR /ros_catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
+WORKDIR /catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
 RUN wget http://pjreddie.com/media/files/yolov3.weights
 RUN wget https://github.com/WHERESystem/darknet_ros/releases/download/1.1.1/deer_logos.weights
-WORKDIR /ros_catkin_ws/src/
+WORKDIR /catkin_ws/src/
 
 # ENV LD_LIBRARY_PATH = $LD_LIBRARY_PATH:/usr/local/cuda/lib64
 
-RUN echo "source /ros_catkin_ws/devel/setup.bash" >> ~/.bashrc
-
+RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "export ROS_MASTER_URI=http://192.168.1.3:11311/" >> ~/.bashrc
-# RUN echo "export ROS_IP=192.168.1.74" >> ~/.bashrc
+RUN echo "export ROS_IP=192.168.1.16" >> ~/.bashrc
