@@ -38,16 +38,16 @@ RUN apt-get update \
 RUN apt-get update \
     && apt-get install -y python3-pip python3-rospkg nano\
     && pip3 install defusedxml netifaces\
-    && apt-get install python3-numpy\
     && apt-get install -y python3-opencv\
     && apt-get install libpcap-dev -y\
+    && apt-get install -y python3-pandas python3-tqdm python3-seaborn\
     && apt-get install -y git python3 build-essential python3-zmq python3-matplotlib python3-scipy libev-dev libevdev2\
     && apt-get install python3-catkin-tools python3-osrf-pycommon -y
 
-# SHELL ["/bin/bash", "-c"]
-
-RUN pip3 install setuptools==49.6.0
-RUN pip3 install imutils pyserial rpi.gpio
+RUN pip3 install imutils pyserial rpi.gpio\
+    && pip3 install torchvision\
+    && pip3 install numpy==1.21\
+    && pip3 install setuptools==49.6.0
 
 RUN mkdir -p catkin_ws/src
 WORKDIR /catkin_ws/src
@@ -56,14 +56,15 @@ RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 
 ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
-RUN git clone --recursive https://github.com/WHERESystem/usb_cam.git
-RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
+# RUN git clone --recursive https://github.com/WHERESystem/usb_cam.git
+# RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
+RUN git clone https://github.com/TravisMoleski/yolov7.git
 
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd /catkin_ws; catkin build'
 
-WORKDIR /catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
-RUN wget http://pjreddie.com/media/files/yolov3.weights
-RUN wget https://github.com/WHERESystem/darknet_ros/releases/download/1.1.1/deer_logos.weights
+# WORKDIR /catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
+# RUN wget http://pjreddie.com/media/files/yolov3.weights
+# RUN wget https://github.com/WHERESystem/darknet_ros/releases/download/1.1.1/deer_logos.weights
 WORKDIR /catkin_ws/src/
 
 # ENV LD_LIBRARY_PATH = $LD_LIBRARY_PATH:/usr/local/cuda/lib64

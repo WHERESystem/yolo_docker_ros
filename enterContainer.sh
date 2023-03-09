@@ -1,1 +1,1 @@
-docker exec -it jetson_noetic_yolo bash
+docker exec -it ros_noetic_yoloV7 bash

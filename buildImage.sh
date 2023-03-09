@@ -1,1 +1,1 @@
-docker build -f ros_noetic_yolo.dockerfile -t ros_noetic_yolo --build-arg CACHEBUST=$(date +%s) .
+docker build -f ros_noetic_yolov7.dockerfile -t ros_noetic_yolov7 --build-arg CACHEBUST=$(date +%s) .

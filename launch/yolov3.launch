@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <launch>
-
-	<include file="$(find usb_cam)/launch/usb_cam-3-12A-HD.launch"/>
-	<include file="$(find darknet_ros)/launch/yolo_v3-tiny.launch"/>
-
+	<!-- <include file="$(find usb_cam)/launch/usb_cam-3-12A-HD.launch"/> -->
+	<include file="$(find darknet_ros)/launch/yolo_v3.launch">
+		<arg name="image" default="/camera/image_raw_bgr_opencv" />
+	</include>  
 </launch>
