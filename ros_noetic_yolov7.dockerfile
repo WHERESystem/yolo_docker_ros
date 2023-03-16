@@ -46,8 +46,13 @@ RUN apt-get update \
 
 RUN pip3 install imutils pyserial rpi.gpio\
     && pip3 install torchvision\
-    && pip3 install numpy==1.21\
-    && pip3 install setuptools==49.6.0
+    && pip3 install onnx onnxruntime onnxsim onnx-tf\
+    && pip3 install setuptools==49.6.0\
+    # && pip3 install tensorflow-probability\
+    # && pip3 install tensorflow==2.3.0\
+    && pip3 install onnxruntime-gpu
+
+RUN pip3 install protobuf==3.20 && pip3 install numpy==1.23.1
 
 RUN mkdir -p catkin_ws/src
 WORKDIR /catkin_ws/src
@@ -59,17 +64,38 @@ ARG CACHEBUST=1
 # RUN git clone --recursive https://github.com/WHERESystem/usb_cam.git
 # RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
 RUN git clone https://github.com/TravisMoleski/yolov7.git
-
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd /catkin_ws; catkin build'
 
 # WORKDIR /catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights
 # RUN wget http://pjreddie.com/media/files/yolov3.weights
 # RUN wget https://github.com/WHERESystem/darknet_ros/releases/download/1.1.1/deer_logos.weights
-WORKDIR /catkin_ws/src/
+WORKDIR /catkin_ws/src/yolov7/src
+
+RUN mkdir weights
+WORKDIR /catkin_ws/src/yolov7/src/weights
+RUN wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
+RUN wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt
+
+
+WORKDIR  /catkin_ws/src/yolov7/src
+RUN python3 export.py --weights ./weights/yolov7-tiny.pt --grid --end2end --simplify \
+        --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640 --max-wh 640     
+
+RUN mkdir /catkin_ws/src/yolov7/src/weights/onnx_yv7
+# RUN mkdir /catkin_ws/src/yolov7/src/weights/tf
+# RUN mkdir /catkin_ws/src/yolov7/src/weights/tf_lite
+
+WORKDIR /catkin_ws/src/yolov7/src/weights
+RUN mv yolov7-tiny.onnx  yolov7-tiny.torchscript.pt  yolov7-tiny.torchscript.ptl /catkin_ws/src/yolov7/src/weights/onnx_yv7
+# RUN onnx-tf convert -i /catkin_ws/src/yolov7/src/weights/onnx_yv7/yolov7-tiny.onnx -o  /catkin_ws/src/yolov7/src/weights/tf
+
+WORKDIR /catkin_ws/src/yolov7/src
+# RUN python3 tf2tflite_yolov7.py
 
 # ENV LD_LIBRARY_PATH = $LD_LIBRARY_PATH:/usr/local/cuda/lib64
 
 RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
-
 RUN echo "export ROS_MASTER_URI=http://192.168.1.3:11311/" >> ~/.bashrc
 # RUN echo "export ROS_IP=192.168.1.3" >> ~/.bashrc
+
+WORKDIR /catkin_ws/src/yolov7/src
