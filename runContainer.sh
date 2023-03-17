@@ -1,6 +1,7 @@
 docker rm -f ros_noetic_yolov7
 docker -D run --privileged -it -e  DISPLAY=$DISPLAY \
 --privileged \
+--runtime=nvidia \
 -v /dev/video0:/dev/video0 \
 -v $(pwd)/images:/catkin_ws/src/yolov7/src/testImg \
 -v $(pwd)/launch:/catkin_ws/src/launch \

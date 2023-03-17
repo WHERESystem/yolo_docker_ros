@@ -1,0 +1,1 @@
+docker exec -it jetson_noetic_yolov7 bash
