@@ -88,10 +88,11 @@ WORKDIR /catkin_ws/src
 RUN echo 'source /opt/ros/${ROS_DISTRO}/setup.bash' >> /root/.bashrc
 
 
-# ARG CACHEBUST=1
+ARG CACHEBUST=1
 # RUN git clone https://github.com/OUIDEAS/velodyne.git
 # RUN git clone https://github.com/WHERESystem/usb_cam.git
 # RUN git clone --recursive https://github.com/WHERESystem/darknet_ros.git 
+
 RUN git clone https://github.com/TravisMoleski/yolov7.git
 
 # RUN apt-get update && rosdep install --from-paths . -y
@@ -107,10 +108,11 @@ RUN wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny
 
 # WORKDIR  /catkin_ws/src/yolov7/src
 ENV LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64
-RUN python3 /catkin_ws/src/yolov7/src/export.py --weights /catkin_ws/src/yolov7/src/weights/yolov7-tiny.pt --grid --end2end  \
---topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640 --max-wh 640
+# RUN python3 /catkin_ws/src/yolov7/src/export.py --weights /catkin_ws/src/yolov7/src/weights/yolov7-tiny.pt --grid --end2end  \
+# --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640 --max-wh 640
 
-# "mkdir /catkin_ws/src/yolov7/src/weights/onnx_yv7",\
+RUN mkdir /catkin_ws/src/yolov7/src/weights/onnx_yv7
+
 # "mv yolov7-tiny.onnx  yolov7-tiny.torchscript.pt  yolov7-tiny.torchscript.ptl /catkin_ws/src/yolov7/src/weights/onnx_yv7"]
 
 # RUN mkdir /catkin_ws/src/yolov7/src/weights/onnx_yv7
@@ -133,3 +135,14 @@ RUN python3 /catkin_ws/src/yolov7/src/export.py --weights /catkin_ws/src/yolov7/
 RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
 RUN echo "export ROS_MASTER_URI=http://192.168.1.3:11311/" >> ~/.bashrc
 RUN echo "export ROS_IP=192.168.55.1" >> ~/.bashrc
+
+
+WORKDIR /catkin_ws/src/yolov7/src
+COPY ./entrypoint.sh /catkin_ws/src/yolov7/src
+RUN chmod +x ./entrypoint.sh
+# ENTRYPOINT [ "./entrypoint.sh"]
+# CMD ["/bin/bash", "-c", "python3 /catkin_ws/src/yolov7/src/export.py --weights /catkin_ws/src/yolov7/src/weights/yolov7-tiny.pt \
+# --grid --end2end --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 320 320 --max-wh 320;python3 /catkin_ws/src/yolov7/src/export.py \ 
+# --weights /catkin_ws/src/yolov7/src/weights/yolov7-tiny.pt --grid --end2end --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 320 320 --max-wh 320; \ 
+# mv /catkin_ws/src/yolov7/src/weights/yolov7-tiny.onnx  /catkin_ws/src/yolov7/src/weights/yolov7-tiny.torchscript.pt  /catkin_ws/src/yolov7/src/weights/yolov7-tiny.torchscript.ptl \ 
+# /catkin_ws/src/yolov7/src/weights/onnx_yv7"]
